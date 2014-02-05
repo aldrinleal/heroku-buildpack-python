@@ -257,14 +257,15 @@ cache=$CACHE_DIR
 mkdir -p ${cache}
 
 cmake_version="2.8.12.2"
-cmake_url="http://www.cmake.org/files/v2.8/cmake-${cmake_version}.tar.gz"
+cmake_dir="cmake-${cmake_version}"
+cmake_url="https://static-6px.s3.amazonaws.com/archives/${cmake_dir}.tar.gz"
 cmake_file="cmake-${cmake_version}.tar.gz"
 cmake_tar_dir="cmake-${cmake_version}"
 
 opencv_version="2.4.8"
 opencv_dir="opencv-${opencv_version}"
 opencv_file="${opencv_dir}.tar.gz"
-opencv_url="https://github.com/Itseez/opencv/archive/${opencv_version}.tar.gz"
+opencv_url="https://static-6px.s3.amazonaws.com/archives/${opencv_dir}.tar.gz"
 
 cache_target=${cache}/${cmake_file}
 build_target=${build}/.heroku
