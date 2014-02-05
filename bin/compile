@@ -243,83 +243,35 @@ set-default-env LANG en_US.UTF-8
 set-default-env PYTHONHASHSEED random
 set-default-env PYTHONPATH /app/
 
-# Install OpenCV
-set -e
+# Install precompiled OpenCV
 
-indent() {
-  sed -u 's/^/       /'
-}
+# fetch and cache the vulcan build
+OPENCV_PACKAGE="http://s3.amazonaws.com/tznode/vulcan-compiled-opencv.tgz"
+OPENCV_PACKAGE_ETAG=$(curl -s --head "$OPENCV_PACKAGE" | grep -Ei '^etag' | sed -r 's/^etag|[^a-zA-Z0-9]+//gi')
+VENDORED_OPENCV="/app/vendor/opencv"
+OPENCV_CACHE="$CACHE_DIR/opencv_$OPENCV_PACKAGE_ETAG";
 
-build=$BUILD_DIR
-cache=$CACHE_DIR
-
-# Ensure it exists
-mkdir -p ${cache}
-
-cmake_version="2.8.12.2"
-cmake_dir="cmake-${cmake_version}"
-cmake_url="https://static-6px.s3.amazonaws.com/archive/${cmake_dir}.tar.gz"
-cmake_file="cmake-${cmake_version}.tar.gz"
-cmake_tar_dir="cmake-${cmake_version}"
-
-opencv_version="2.4.8"
-opencv_dir="opencv-${opencv_version}"
-opencv_file="${opencv_dir}.tar.gz"
-opencv_url="https://static-6px.s3.amazonaws.com/archive/${opencv_dir}.tar.gz"
-
-cache_target=${cache}/${cmake_file}
-build_target=${build}/.heroku
-target=/app/.heroku
-
-if [ ! -f ${cache_target} ]; then
-  echo "No cached compile detected. Bulding..." | indent
-  cd $build
-  
-  echo "Compiling cmake v${cmake_version}..." | indent
-  # Compile cmake
-  curl -s ${cmake_url} > ${cmake_file}
-  tar zxf ${cmake_file}
-  cd ${cmake_tar_dir}
-  ./bootstrap --prefix=${target} | indent
-  make | indent
-  make install | indent
-  cd ..
-
-  # Create cache slug
-  tar czf ${cache_target} -C ${target} .
+if [ -d "$OPENCV_CACHE" ]; then
+  echo "-----> Reusing cached OpenCV ($OPENCV_PACKAGE_ETAG)"
+  cp -a $OPENCV_CACHE $VENDORED_OPENCV
+else
+  echo "-----> Fetching and caching OpenCV ($OPENCV_PACKAGE_ETAG)"
+  mkdir -p $VENDORED_OPENCV
+  curl $OPENCV_PACKAGE -s -o - | tar xzf - -C $VENDORED_OPENCV
+  mkdir -p $CACHE_DIR
+  cp -a $VENDORED_OPENCV $OPENCV_CACHE
 fi
 
-mkdir -p ${build_target}
-tar xzf ${cache_target} -C ${build_target}
-PATH=${build_target}/bin:$PATH
+# vendor
+echo "-----> Vendoring OpenCV shared objects into slug"
+VENDORED_SO="$BUILD_DIR/vendor/opencv/lib"
+mkdir -p $VENDORED_SO
+cp -a "$VENDORED_OPENCV/lib/." $VENDORED_SO
 
-cache_target=${cache}/${opencv_file}
-build_target=${build}/.heroku
-target=/app/.heroku
-
-if [ ! -f ${cache_target} ]; then
-  echo "No cached compile detected. Bulding..." | indent
-  cd $build
-
-  echo "Compiling OpenCV v${opencv_version}..." | indent
-  # Compile OpenCV
-  curl -s ${opencv_url} > ${opencv_file}
-  tar zxf ${opencv_file}
-  cd ${opencv_dir}
-  mkdir build
-  cd build
-  cmake -DCMAKE_INSTALL_PREFIX=${target} -DCMAKE_FIND_ROOT_PATH=${target} -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS=OFF -DCMAKE_SHARED_LINKER_FLAGS="-fPIC" .. | indent
-  make install | indent
-  cd ..
-
-  #Create cache slug
-  tar czf ${cache_target} -C ${target} .
-fi
-
-mkdir -p ${build_target}
-tar xzf ${cache_target} -C ${build_target}
-
-# ### Fin.
+# runtime
+mkdir -p "$BUILD_DIR/.profile.d"
+echo "export LD_LIBRARY_PATH=\"\$HOME/vendor/opencv/lib:\$LD_LIBRARY_PATH\"" > $BUILD_DIR/.profile.d/opencv.sh
+echo "export PKG_CONFIG_PATH=\"\$HOME/vendor/opencv/lib/pkgconfig:\$PKG_CONFIG_PATH\"" >> $BUILD_DIR/.profile.d/opencv.sh
 
 # Experimental post_compile hook.
 bpwatch start post_compile
