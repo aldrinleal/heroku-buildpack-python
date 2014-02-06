@@ -286,7 +286,9 @@ if [ ! -f ${cache_target} ]; then
   cd ..
 
   # Create cache slug
-  tar czf ${cache_target} -C ${target} .
+  tar czf ${cache_target} -C ${target} 
+else
+  echo "Using cached compile for CMake v${cmake_version}..." | indent
 fi
 
 mkdir -p ${build_target}
@@ -314,6 +316,8 @@ if [ ! -f ${cache_target} ]; then
 
   # Create cache slug
   tar czf ${cache_target} -C ${target} .
+else
+  echo "Using cached compile for OpenCV v${opencv_version}..." | indent
 fi
 
 mkdir -p ${build_target}
