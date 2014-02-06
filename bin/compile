@@ -271,57 +271,57 @@ cache_target=${cache}/${cmake_file}
 build_target=${build}/.heroku
 target=/app/.heroku
 
-# if [ ! -f ${cache_target} ]; then
-#   echo "No cached compile for CMake v${cmake_version} detected. Bulding..." | indent
-#   cd $build
+if [ ! -f ${cache_target} ]; then
+  echo "No cached compile for CMake v${cmake_version} detected. Bulding..." | indent
+  cd $build
   
-#   echo "Compiling CMake v${cmake_version}..." | indent
-#   # Compile cmake
-#   curl -s ${cmake_url} > ${cmake_file}
-#   tar zxf ${cmake_file}
-#   cd ${cmake_tar_dir}
-#   ./bootstrap --prefix=${target} | indent
-#   make | indent
-#   make install | indent
-#   cd ..
+  echo "Compiling CMake v${cmake_version}..." | indent
+  # Compile cmake
+  curl -s ${cmake_url} > ${cmake_file}
+  tar zxf ${cmake_file}
+  cd ${cmake_tar_dir}
+  ./bootstrap --prefix=${target} | indent
+  make | indent
+  make install | indent
+  cd ..
 
-#   # Create cache slug
-#   tar czf ${cache_target} -C ${target} 
-# else
-#   echo "Using cached compile for CMake v${cmake_version}..." | indent
-# fi
+  # Create cache slug
+  tar czf ${cache_target} -C ${target} 
+else
+  echo "Using cached compile for CMake v${cmake_version}..." | indent
+fi
 
-# mkdir -p ${build_target}
-# tar xzf ${cache_target} -C ${build_target}
-# PATH=${build_target}/bin:$PATH
+mkdir -p ${build_target}
+tar xzf ${cache_target} -C ${build_target}
+PATH=${build_target}/bin:$PATH
 
 # cache_target=${cache}/${opencv_file}
 # build_target=${build}/.heroku
 # target=/app/.heroku
 
-if [ ! -f ${cache_target} ]; then
-  echo "No cached compile for OpenCV ${opencv_version} detected. Bulding..." | indent
-  cd $build
+# if [ ! -f ${cache_target} ]; then
+#   echo "No cached compile for OpenCV ${opencv_version} detected. Bulding..." | indent
+#   cd $build
 
-  echo "Compiling OpenCV v${opencv_version}..." | indent
-  # Compile OpenCV
-  curl -s ${opencv_url} > ${opencv_file}
-  tar zxf ${opencv_file}
-  cd ${opencv_dir}
-  mkdir build
-  cd build
-  cmake -DCMAKE_INSTALL_PREFIX=${target} -DCMAKE_FIND_ROOT_PATH=${target} -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS=OFF -DCMAKE_SHARED_LINKER_FLAGS="-fPIC" .. | indent
-  make install | indent
-  cd ..
+#   echo "Compiling OpenCV v${opencv_version}..." | indent
+#   # Compile OpenCV
+#   curl -s ${opencv_url} > ${opencv_file}
+#   tar zxf ${opencv_file}
+#   cd ${opencv_dir}
+#   mkdir build
+#   cd build
+#   cmake -DCMAKE_INSTALL_PREFIX=${target} -DCMAKE_FIND_ROOT_PATH=${target} -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS=OFF -DCMAKE_SHARED_LINKER_FLAGS="-fPIC" .. | indent
+#   make install | indent
+#   cd ..
 
-  # Create cache slug
-  tar czf ${cache_target} -C ${target} .
-else
-  echo "Using cached compile for OpenCV v${opencv_version}..." | indent
-fi
+#   # Create cache slug
+#   tar czf ${cache_target} -C ${target} .
+# else
+#   echo "Using cached compile for OpenCV v${opencv_version}..." | indent
+# fi
 
-mkdir -p ${build_target}
-tar xzf ${cache_target} -C ${build_target}
+# mkdir -p ${build_target}
+# tar xzf ${cache_target} -C ${build_target}
 
 # ### Fin.
 
