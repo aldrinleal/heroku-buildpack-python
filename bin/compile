@@ -272,10 +272,10 @@ build_target=${build}/.heroku
 target=/app/.heroku
 
 if [ ! -f ${cache_target} ]; then
-  echo "No cached compile for cmake v${cmake_version} detected. Bulding..." | indent
+  echo "No cached compile for CMake v${cmake_version} detected. Bulding..." | indent
   cd $build
   
-  echo "Compiling cmake v${cmake_version}..." | indent
+  echo "Compiling CMake v${cmake_version}..." | indent
   # Compile cmake
   curl -s ${cmake_url} > ${cmake_file}
   tar zxf ${cmake_file}
@@ -298,7 +298,7 @@ build_target=${build}/.heroku
 target=/app/.heroku
 
 if [ ! -f ${cache_target} ]; then
-  echo "No cached compile for opencv ${opencv_version} detected. Bulding..." | indent
+  echo "No cached compile for OpenCV ${opencv_version} detected. Bulding..." | indent
   cd $build
 
   echo "Compiling OpenCV v${opencv_version}..." | indent
