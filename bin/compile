@@ -17,7 +17,6 @@ BUILD_DIR=$1
 CACHE_DIR=$2
 ENV_DIR=$3
 
-
 CACHED_DIRS=".heroku"
 
 # Static configurations for virtualenv caches.
@@ -306,7 +305,7 @@ if [ ! -f ${cache_target} ]; then
   echo "Compiling OpenCV v${opencv_version}..." | indent
   # Compile OpenCV
   curl -s ${opencv_url} > ${opencv_file}
-  tar zxf ${opencv_file}
+  tar xf ${opencv_file}
   cd ${opencv_dir}
   mkdir build
   cd build
