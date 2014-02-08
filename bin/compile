@@ -225,7 +225,7 @@ tar xzf ${cache_target} -C ${build_target}
 PATH=${build_target}/bin:$PATH
 
 # Install OpenCV
-opencv_version="2.4.7"
+opencv_version="2.4.8"
 opencv_dir="opencv-${opencv_version}"
 opencv_file="${opencv_dir}.tar.gz"
 opencv_url="https://static-6px.s3.amazonaws.com/archive/${opencv_dir}.tar.gz"
