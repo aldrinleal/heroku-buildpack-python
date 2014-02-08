@@ -246,6 +246,7 @@ if [ ! -f ${cache_target} ]; then
   cd ..
 
   # Create cache slug
+  echo "Creating cache slug..." | indent
   tar czf ${cache_target} -C ${target} 
 else
   echo "Using cached compile for CMake v${cmake_version}..." | indent
