@@ -199,142 +199,7 @@ fi
 set -e
 hash -r
 
-# TEST
-
-# Install CMake and OpenCV
-set -e
-
-indent() {
-  sed -u 's/^/       /'
-}
-
-build=$BUILD_DIR
-cache=$CACHE_DIR
-
-# Ensure it exists
-mkdir -p ${cache}
-
-# CMake specs
-cmake_version="2.8.12.2"
-cmake_dir="cmake-${cmake_version}"
-cmake_url="https://static-6px.s3.amazonaws.com/archive/${cmake_dir}.tar.gz"
-cmake_file="cmake-${cmake_version}.tar.gz"
-cmake_tar_dir="cmake-${cmake_version}"
-
-# OpenCV specs
-opencv_version="2.4.7"
-opencv_dir="opencv-${opencv_version}"
-opencv_file="${opencv_dir}.tar.gz"
-opencv_url="https://static-6px.s3.amazonaws.com/archive/${opencv_dir}.tar.gz"
-
-cache_target=${cache}/${cmake_file}
-build_target=${build}/.heroku
-target=/app/.heroku
-
-if [ ! -f ${cache_target} ]; then
-  echo "No cached compile for CMake v${cmake_version} detected. Bulding..." | indent
-  cd $build
-  
-  echo "Compiling CMake v${cmake_version}..." | indent
-  # Compile cmake
-  curl -s ${cmake_url} > ${cmake_file}
-  tar zxf ${cmake_file}
-  cd ${cmake_tar_dir}
-  ./bootstrap --prefix=${target} | indent
-  make | indent
-  make install | indent
-  cd ..
-
-  # Create cache slug
-  tar czf ${cache_target} -C ${target} 
-else
-  echo "Using cached compile for CMake v${cmake_version}..." | indent
-fi
-
-mkdir -p ${build_target}
-tar xzf ${cache_target} -C ${build_target}
-PATH=${build_target}/bin:$PATH
-
-cache_target=${cache}/${opencv_file}
-build_target=${build}/.heroku
-target=/app/.heroku
-
-if [ ! -f ${cache_target} ]; then
-  echo "No cached compile for OpenCV ${opencv_version} detected. Bulding..." | indent
-  cd $build
-
-  echo "Compiling OpenCV v${opencv_version}..." | indent
-  # Compile OpenCV
-  curl -s ${opencv_url} > ${opencv_file}
-  tar xf ${opencv_file}
-  cd ${opencv_dir}
-  mkdir build
-  cd build
-  cmake -DCMAKE_INSTALL_PREFIX=${target} -DCMAKE_FIND_ROOT_PATH=${target} -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS=OFF -DCMAKE_SHARED_LINKER_FLAGS="-fPIC" .. | indent
-  make install | indent
-  cd ..
-
-  # Create cache slug
-  tar czf ${cache_target} -C ${target} .
-else
-  echo "Using cached compile for OpenCV v${opencv_version}..." | indent
-fi
-
-mkdir -p ${build_target}
-tar xzf ${cache_target} -C ${build_target}
-
-# END TEST
-
-# Pylibmc support.
-# See [`bin/steps/pylibmc`](pylibmc.html).
-bpwatch start pylibmc_install
-  source $BIN_DIR/steps/pylibmc
-bpwatch stop pylibmc_install
-
-# Install Mercurial if it appears to be required.
-if (grep -Fiq "hg+" requirements.txt) then
-  bpwatch start mercurial_install
-    /app/.heroku/python/bin/pip install  mercurial | cleanup | indent
-  bpwatch stop mercurial_install
-fi
-
-# Install dependencies with Pip.
-puts-step "Installing dependencies using Pip ($PIP_VERSION)"
-
-
-[ ! "$FRESH_PYTHON" ] && bpwatch start pip_install
-[ "$FRESH_PYTHON" ] && bpwatch start pip_install_first
-
-/app/.heroku/python/bin/pip install -r requirements.txt --exists-action=w --src=./.heroku/src  | cleanup | indent
-
-[ ! "$FRESH_PYTHON" ] && bpwatch stop pip_install
-[ "$FRESH_PYTHON" ] && bpwatch stop pip_install_first
-
-# Django collectstatic support.
-bpwatch start collectstatic
-  sub-env $BIN_DIR/steps/collectstatic
-bpwatch stop collectstatic
-
-# ### Finalize
-#
-
-# Store new artifacts in cache.
-bpwatch start dump_cache
-  for dir in $CACHED_DIRS; do
-    rm -rf $CACHE_DIR/$dir
-    cp -R $dir $CACHE_DIR/
-  done
-bpwatch stop dump_cache
-
-# Set context environment variables.
-set-env PATH '$HOME/.heroku/python/bin:$PATH'
-set-env PYTHONUNBUFFERED true
-set-env PYTHONHOME /app/.heroku/python
-set-default-env LIBRARY_PATH /app/.heroku/vendor/lib
-set-default-env LD_LIBRARY_PATH /app/.heroku/vendor/lib
-set-default-env LANG en_US.UTF-8
-set-default-env PYTHONHASHSEED random
-set-default-env PYTHONPATH /app/
+# # TEST
 
 # # Install CMake and OpenCV
 # set -e
@@ -417,6 +282,141 @@ set-default-env PYTHONPATH /app/
 
 # mkdir -p ${build_target}
 # tar xzf ${cache_target} -C ${build_target}
+
+# # END TEST
+
+# Pylibmc support.
+# See [`bin/steps/pylibmc`](pylibmc.html).
+bpwatch start pylibmc_install
+  source $BIN_DIR/steps/pylibmc
+bpwatch stop pylibmc_install
+
+# Install Mercurial if it appears to be required.
+if (grep -Fiq "hg+" requirements.txt) then
+  bpwatch start mercurial_install
+    /app/.heroku/python/bin/pip install  mercurial | cleanup | indent
+  bpwatch stop mercurial_install
+fi
+
+# Install dependencies with Pip.
+puts-step "Installing dependencies using Pip ($PIP_VERSION)"
+
+
+[ ! "$FRESH_PYTHON" ] && bpwatch start pip_install
+[ "$FRESH_PYTHON" ] && bpwatch start pip_install_first
+
+/app/.heroku/python/bin/pip install -r requirements.txt --exists-action=w --src=./.heroku/src  | cleanup | indent
+
+[ ! "$FRESH_PYTHON" ] && bpwatch stop pip_install
+[ "$FRESH_PYTHON" ] && bpwatch stop pip_install_first
+
+# Django collectstatic support.
+bpwatch start collectstatic
+  sub-env $BIN_DIR/steps/collectstatic
+bpwatch stop collectstatic
+
+# ### Finalize
+#
+
+# Store new artifacts in cache.
+bpwatch start dump_cache
+  for dir in $CACHED_DIRS; do
+    rm -rf $CACHE_DIR/$dir
+    cp -R $dir $CACHE_DIR/
+  done
+bpwatch stop dump_cache
+
+# Set context environment variables.
+set-env PATH '$HOME/.heroku/python/bin:$PATH'
+set-env PYTHONUNBUFFERED true
+set-env PYTHONHOME /app/.heroku/python
+set-default-env LIBRARY_PATH /app/.heroku/vendor/lib
+set-default-env LD_LIBRARY_PATH /app/.heroku/vendor/lib
+set-default-env LANG en_US.UTF-8
+set-default-env PYTHONHASHSEED random
+set-default-env PYTHONPATH /app/
+
+# Install CMake and OpenCV
+set -e
+
+indent() {
+  sed -u 's/^/       /'
+}
+
+build=$BUILD_DIR
+cache=$CACHE_DIR
+
+# Ensure it exists
+mkdir -p ${cache}
+
+# CMake specs
+cmake_version="2.8.12.2"
+cmake_dir="cmake-${cmake_version}"
+cmake_url="https://static-6px.s3.amazonaws.com/archive/${cmake_dir}.tar.gz"
+cmake_file="cmake-${cmake_version}.tar.gz"
+cmake_tar_dir="cmake-${cmake_version}"
+
+# OpenCV specs
+opencv_version="2.4.7"
+opencv_dir="opencv-${opencv_version}"
+opencv_file="${opencv_dir}.tar.gz"
+opencv_url="https://static-6px.s3.amazonaws.com/archive/${opencv_dir}.tar.gz"
+
+cache_target=${cache}/${cmake_file}
+build_target=${build}/.heroku
+target=/app/.heroku
+
+if [ ! -f ${cache_target} ]; then
+  echo "No cached compile for CMake v${cmake_version} detected. Bulding..." | indent
+  cd $build
+  
+  echo "Compiling CMake v${cmake_version}..." | indent
+  # Compile cmake
+  curl -s ${cmake_url} > ${cmake_file}
+  tar zxf ${cmake_file}
+  cd ${cmake_tar_dir}
+  ./bootstrap --prefix=${target} | indent
+  make | indent
+  make install | indent
+  cd ..
+
+  # Create cache slug
+  tar czf ${cache_target} -C ${target} 
+else
+  echo "Using cached compile for CMake v${cmake_version}..." | indent
+fi
+
+mkdir -p ${build_target}
+tar xzf ${cache_target} -C ${build_target}
+PATH=${build_target}/bin:$PATH
+
+cache_target=${cache}/${opencv_file}
+build_target=${build}/.heroku
+target=/app/.heroku
+
+if [ ! -f ${cache_target} ]; then
+  echo "No cached compile for OpenCV ${opencv_version} detected. Bulding..." | indent
+  cd $build
+
+  echo "Compiling OpenCV v${opencv_version}..." | indent
+  # Compile OpenCV
+  curl -s ${opencv_url} > ${opencv_file}
+  tar xf ${opencv_file}
+  cd ${opencv_dir}
+  mkdir build
+  cd build
+  cmake -DCMAKE_INSTALL_PREFIX=${target} -DCMAKE_FIND_ROOT_PATH=${target} -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS=OFF -DCMAKE_SHARED_LINKER_FLAGS="-fPIC" .. | indent
+  make install | indent
+  cd ..
+
+  # Create cache slug
+  tar czf ${cache_target} -C ${target} .
+else
+  echo "Using cached compile for OpenCV v${opencv_version}..." | indent
+fi
+
+mkdir -p ${build_target}
+tar xzf ${cache_target} -C ${build_target}
 
 # Experimental post_compile hook.
 bpwatch start post_compile
