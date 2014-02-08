@@ -150,7 +150,6 @@ if [ -f .heroku/python-version ]; then
   fi
 fi
 
-
 if [ ! "$SKIP_INSTALL" ]; then
   bpwatch start install_python
     puts-step "Preparing Python runtime ($PYTHON_VERSION)"
@@ -171,33 +170,6 @@ if [ ! "$SKIP_INSTALL" ]; then
 else
   puts-step "Using Python runtime ($PYTHON_VERSION)"
 fi
-
-# If Pip isn't up to date:
-if [ "$FRESH_PYTHON" ] || [[ ! $(pip --version) == *$PIP_VERSION* ]]; then
-  WORKING_DIR=$(pwd)
-
-  bpwatch start prepare_environment
-
-  bpwatch start install_distribute
-    # Prepare it for the real world
-    puts-step "Installing Distribute ($DISTRIBUTE_VERSION)"
-    cd $ROOT_DIR/vendor/distribute-$DISTRIBUTE_VERSION/
-    python setup.py install &> /dev/null
-    cd $WORKING_DIR
-  bpwatch stop install_distribute
-
-  bpwatch start install_pip
-    puts-step "Installing Pip ($PIP_VERSION)"
-    cd $ROOT_DIR/vendor/pip-$PIP_VERSION/
-    python setup.py install &> /dev/null
-    cd $WORKING_DIR
-
-  bpwatch stop install_pip
-  bpwatch stop prepare_environment
-fi
-
-set -e
-hash -r
 
 # TEST
 
@@ -290,6 +262,33 @@ mkdir -p ${build_target}
 tar xzf ${cache_target} -C ${build_target}
 
 # END TEST
+
+# If Pip isn't up to date:
+if [ "$FRESH_PYTHON" ] || [[ ! $(pip --version) == *$PIP_VERSION* ]]; then
+  WORKING_DIR=$(pwd)
+
+  bpwatch start prepare_environment
+
+  bpwatch start install_distribute
+    # Prepare it for the real world
+    puts-step "Installing Distribute ($DISTRIBUTE_VERSION)"
+    cd $ROOT_DIR/vendor/distribute-$DISTRIBUTE_VERSION/
+    python setup.py install &> /dev/null
+    cd $WORKING_DIR
+  bpwatch stop install_distribute
+
+  bpwatch start install_pip
+    puts-step "Installing Pip ($PIP_VERSION)"
+    cd $ROOT_DIR/vendor/pip-$PIP_VERSION/
+    python setup.py install &> /dev/null
+    cd $WORKING_DIR
+
+  bpwatch stop install_pip
+  bpwatch stop prepare_environment
+fi
+
+set -e
+hash -r
 
 # Pylibmc support.
 # See [`bin/steps/pylibmc`](pylibmc.html).
