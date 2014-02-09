@@ -217,7 +217,7 @@ if [ ! -f ${cache_target} ]; then
 
   # Create cache slug
   echo "Creating cache slug for Tar v${tar_version}..." | indent
-  tar cvzf ${cache_target} -C ${target} .
+  tar czf ${cache_target} -C ${target} .
 else
   echo "Using cached compile for Tar v${tar_version}..." | indent
 fi
@@ -225,7 +225,6 @@ fi
 mkdir -p ${build_target}
 tar xzf ${cache_target} -C ${build_target}
 PATH=${build_target}/bin:$PATH
-# PATH=${build_target}/src:$PATH
 
 # Compile CMake
 cmake_version="2.8.12.2"
@@ -256,7 +255,7 @@ if [ ! -f ${cache_target} ]; then
 
   # Create cache slug
   echo "Creating cache slug for CMake v${cmake_version}..." | indent
-  tar cvzf ${cache_target} -C ${target} .
+  tar czf ${cache_target} -C ${target} .
 else
   echo "Using cached compile for CMake v${cmake_version}..." | indent
 fi
@@ -323,7 +322,7 @@ if [ ! -f ${cache_target} ]; then
 
   curl -s ${boost_url} > ${boost_file}
 
-  ${tar_build_target}/src/tar zxf ${boost_file}
+  .heroku/tar/src/tar zxf ${boost_file}
   # tar zxf ${boost_file}
   cd ${boost_tar_dir}
   ./bootstrap | indent
@@ -332,7 +331,7 @@ if [ ! -f ${cache_target} ]; then
 
   # Create cache slug
   echo "Creating cache slug for Boost v${boost_version}..." | indent
-  tar cvzf ${cache_target} -C ${target} .
+  tar czf ${cache_target} -C ${target} .
 else
   echo "Using cached compile for Boost v${boost_version}..." | indent
 fi
@@ -371,7 +370,7 @@ if [ ! -f ${cache_target} ]; then
 
   # Create cache slug
   echo "Creating cache slug for PyOpenCV v${pyopencv_version}..." | indent
-  tar cvzf ${cache_target} -C ${target} .
+  tar czf ${cache_target} -C ${target} .
 else
   echo "Using cached compile for PyOpenCV v${pyopencv_version}..." | indent
 fi
