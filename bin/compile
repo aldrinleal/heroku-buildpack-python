@@ -302,43 +302,43 @@ tar xzf ${cache_target} -C ${build_target}
 PATH=${build_target}/bin:$PATH
 
 # Compile PyOpenCV
-pyopencv_version="2.1.0.wr1.2.0"
-pyopencv_dir="pyopencv-${pyopencv_version}"
-pyopencv_url="${BASE_URL}${pyopencv_dir}.tar.gz"
-pyopencv_file="pyopencv-${pyopencv_version}.tar.gz"
-pyopencv_tar_dir="pyopencv-${pyopencv_version}"
+# pyopencv_version="2.1.0.wr1.2.0"
+# pyopencv_dir="pyopencv-${pyopencv_version}"
+# pyopencv_url="${BASE_URL}${pyopencv_dir}.tar.gz"
+# pyopencv_file="pyopencv-${pyopencv_version}.tar.gz"
+# pyopencv_tar_dir="pyopencv-${pyopencv_version}"
 
-# Specify build/cache targets
-cache_target=${cache}/${pyopencv_file}
-build_target=${build}/.heroku
-target=/app/.heroku
+# # Specify build/cache targets
+# cache_target=${cache}/${pyopencv_file}
+# build_target=${build}/.heroku
+# target=/app/.heroku
 
-if [ ! -f ${cache_target} ]; then
-  echo "No cached compile for PyOpenCV v${pyopencv_version} detected. Bulding..." | indent
-  cd $build
+# if [ ! -f ${cache_target} ]; then
+#   echo "No cached compile for PyOpenCV v${pyopencv_version} detected. Bulding..." | indent
+#   cd $build
   
-  # Compile PyOpenCV
-  echo "Compiling PyOpenCV v${pyopencv_version}..." | indent
+#   # Compile PyOpenCV
+#   echo "Compiling PyOpenCV v${pyopencv_version}..." | indent
 
-  curl -s ${pyopencv_url} > ${pyopencv_file}
-  tar zxf ${pyopencv_file}
-  cd ${pyopencv_tar_dir}
-  mkdir build
-  cd build
-  cmake -DCMAKE_INSTALL_PREFIX=${target} -DCMAKE_FIND_ROOT_PATH=${target} -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS=OFF -DCMAKE_SHARED_LINKER_FLAGS="-fPIC" .. | indent
-  make install | indent
-  cd ..
+#   curl -s ${pyopencv_url} > ${pyopencv_file}
+#   tar zxf ${pyopencv_file}
+#   cd ${pyopencv_tar_dir}
+#   mkdir build
+#   cd build
+#   cmake -DCMAKE_INSTALL_PREFIX=${target} -DCMAKE_FIND_ROOT_PATH=${target} -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS=OFF -DCMAKE_SHARED_LINKER_FLAGS="-fPIC" .. | indent
+#   make install | indent
+#   cd ..
 
-  # Create cache slug
-  echo "Creating cache slug for PyOpenCV v${pyopencv_version}..." | indent
-  tar czf ${cache_target} -C ${target} .
-else
-  echo "Using cached compile for PyOpenCV v${pyopencv_version}..." | indent
-fi
+#   # Create cache slug
+#   echo "Creating cache slug for PyOpenCV v${pyopencv_version}..." | indent
+#   tar czf ${cache_target} -C ${target} .
+# else
+#   echo "Using cached compile for PyOpenCV v${pyopencv_version}..." | indent
+# fi
 
-mkdir -p ${build_target}
-tar xzf ${cache_target} -C ${build_target}
-PATH=${build_target}/bin:$PATH
+# mkdir -p ${build_target}
+# tar xzf ${cache_target} -C ${build_target}
+# PATH=${build_target}/bin:$PATH
 
 # END TEST
 
