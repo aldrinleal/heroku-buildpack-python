@@ -243,7 +243,7 @@ if [ ! -f ${cache_target} ]; then
   echo "Compiling OpenCV v${opencv_version}..." | indent
 
   curl -s ${opencv_url} > ${opencv_file}
-  tar xf ${opencv_file}
+  tar zxf ${opencv_file}
   cd ${opencv_dir}
   mkdir build
   cd build
@@ -282,6 +282,8 @@ if [ ! -f ${cache_target} ]; then
 
   curl -s ${boost_url} > ${boost_file}
   tar zxf ${boost_file}
+  ls | indent
+  echo ${boost_tar_dir} | indent
   cd ${boost_tar_dir}
   ./bootstrap | indent
   install --prefix=${target} | indent
