@@ -198,6 +198,8 @@ cache_target=${cache}/${tar_file}
 build_target=${build}/.heroku
 target=/app/.heroku
 
+tar_build_target=${build_target}
+
 if [ ! -f ${cache_target} ]; then
   echo "No cached compile for Tar v${tar_version} detected. Bulding..." | indent
   cd $build
@@ -320,7 +322,9 @@ if [ ! -f ${cache_target} ]; then
   echo "Compiling Boost v${boost_version}..." | indent
 
   curl -s ${boost_url} > ${boost_file}
-  tar zxf ${boost_file}
+
+  ${tar_build_target}/src/tar zxf ${boost_file}
+  # tar zxf ${boost_file}
   cd ${boost_tar_dir}
   ./bootstrap | indent
   install --prefix=${target} | indent
