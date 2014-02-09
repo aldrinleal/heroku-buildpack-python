@@ -281,7 +281,7 @@ if [ ! -f ${cache_target} ]; then
   echo "Compiling Boost v${boost_version}..." | indent
 
   curl -s ${boost_url} > ${boost_file}
-  tar zxf ${boost_file} ${boost_dir}
+  tar zxf ${boost_file} -C ${boost_dir}
   ls | indent
   echo ${boost_tar_dir} | indent
   cd ${boost_tar_dir}
