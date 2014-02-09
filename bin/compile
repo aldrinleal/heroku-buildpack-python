@@ -285,6 +285,7 @@ if [ ! -f ${cache_target} ]; then
 
   curl -s ${boost_url} > ${boost_file}
   tar zxf ${boost_file}
+  ls | indent
   cd ${boost_tar_dir}
   ./bootstrap | indent
   install --prefix=${target} | indent
