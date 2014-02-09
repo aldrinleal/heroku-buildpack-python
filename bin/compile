@@ -286,7 +286,7 @@ if [ ! -f ${cache_target} ]; then
   curl -s ${boost_url} > ${boost_file}
   tar zxf ${boost_file}
   cd ${boost_tar_dir}
-  ./bootstrap.sh | indent
+  ./bootstrap.sh --with-library=python | indent
   ./b2 install --prefix=${target} | indent
   cd ..
 
