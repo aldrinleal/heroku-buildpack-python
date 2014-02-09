@@ -183,7 +183,7 @@ indent() {
 build=$BUILD_DIR
 cache=$CACHE_DIR
 
-$PATH=/app/.heroku/bin:$PATH
+PATH=/app/.heroku/bin:$PATH
 
 # Ensure it exists
 mkdir -p ${cache}
