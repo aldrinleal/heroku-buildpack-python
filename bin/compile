@@ -287,7 +287,7 @@ if [ ! -f ${cache_target} ]; then
   tar zxf ${boost_file}
   cd ${boost_tar_dir}
   ./bootstrap.sh | indent
-  install --prefix=${target} | indent
+  ./b2 install --prefix=${target} | indent
   cd ..
 
   # Create cache slug
