@@ -202,7 +202,7 @@ build_target=${build}/.heroku
 target=/app/.heroku
 
 if [ ! -f ${cache_target} ]; then
-  echo "No cached compile for CMake v${cmake_version} detected. Bulding..." | indent
+  echo "No cached compile for CMake v${cmake_version} detected. Building..." | indent
   cd $build
   
   # Compile CMake
@@ -239,7 +239,7 @@ build_target=${build}/.heroku
 target=/app/.heroku
 
 if [ ! -f ${cache_target} ]; then
-  echo "No cached compile for OpenCV ${opencv_version} detected. Bulding..." | indent
+  echo "No cached compile for OpenCV ${opencv_version} detected. Building..." | indent
   cd $build
 
   # Compile OpenCV
@@ -277,7 +277,7 @@ build_target=${build}/.heroku
 target=/app/.heroku
 
 if [ ! -f ${cache_target} ]; then
-  echo "No cached compile for Boost v${boost_version} detected. Bulding..." | indent
+  echo "No cached compile for Boost v${boost_version} detected. Building..." | indent
   cd $build
   
   # Compile Boost
@@ -314,7 +314,7 @@ PATH=${build_target}/bin:$PATH
 # target=/app/.heroku
 
 # if [ ! -f ${cache_target} ]; then
-#   echo "No cached compile for PyOpenCV v${pyopencv_version} detected. Bulding..." | indent
+#   echo "No cached compile for PyOpenCV v${pyopencv_version} detected. Building..." | indent
 #   cd $build
   
 #   # Compile PyOpenCV
@@ -433,7 +433,7 @@ set-default-env PYTHONPATH /app/
 # target=/app/.heroku
 
 # if [ ! -f ${cache_target} ]; then
-#   echo "No cached compile for CMake v${cmake_version} detected. Bulding..." | indent
+#   echo "No cached compile for CMake v${cmake_version} detected. Building..." | indent
 #   cd $build
   
 #   # Compile cmake
@@ -470,7 +470,7 @@ set-default-env PYTHONPATH /app/
 # target=/app/.heroku
 
 # if [ ! -f ${cache_target} ]; then
-#   echo "No cached compile for OpenCV ${opencv_version} detected. Bulding..." | indent
+#   echo "No cached compile for OpenCV ${opencv_version} detected. Building..." | indent
 #   cd $build
 
 #   # Compile OpenCV
