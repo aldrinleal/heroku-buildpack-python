@@ -247,8 +247,6 @@ indent() {
 build=$BUILD_DIR
 cache=$CACHE_DIR
 
-PATH=/app/.heroku/bin:$PATH
-
 # Ensure it exists
 mkdir -p ${cache}
 
@@ -313,7 +311,7 @@ if [ ! -f ${cache_target} ]; then
   cd ${opencv_dir}
   mkdir build
   cd build
-  cmake -DCMAKE_INSTALL_PREFIX=${target} -DCMAKE_FIND_ROOT_PATH=${target} -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_NEW_PYTHON_SUPPORT=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_SHARED_LINKER_FLAGS="-fPIC" .. | indent
+  cmake -D CMAKE_INSTALL_PREFIX=${target} -D CMAKE_FIND_ROOT_PATH=${target} -D CMAKE_BUILD_TYPE=RELEASE -D BUILD_NEW_PYTHON_SUPPORT=ON -D BUILD_SHARED_LIBS=OFF -D CMAKE_SHARED_LINKER_FLAGS="-fPIC" .. | indent
   make install | indent
   cd ..
 
