@@ -281,12 +281,11 @@ if [ ! -f ${cache_target} ]; then
   echo "Compiling Boost v${boost_version}..." | indent
 
   curl -s ${boost_url} > ${boost_file}
-  tar zxf ${boost_file}
-  ls | indent
-  cd ${boost_tar_dir}
-  ./bootstrap | indent
-  install --prefix=${target} | indent
-  cd ..
+  tar zxvf ${boost_file}
+  # cd ${boost_tar_dir}
+  # ./bootstrap | indent
+  # install --prefix=${target} | indent
+  # cd ..
 
   # Create cache slug
   echo "Creating cache slug for Boost v${boost_version}..." | indent
