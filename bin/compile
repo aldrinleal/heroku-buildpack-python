@@ -302,6 +302,7 @@ tar xzf ${cache_target} -C ${build_target}
 PATH=${build_target}/bin:$PATH
 
 # Compile IDK
+echo "Configuring Python Setup Tools..." | indent
 curl -O http://python-distribute.org/distribute_setup.py
 python distribute_setup.py | indent
 easy_install pip | indent
