@@ -151,7 +151,7 @@ cd ..
 mv python-2.7.6 .heroku/python
 
 # Record for future rference
-echo python-2.7.6 > .heroku/python-version
+echo $PYTHON_VERSION > .heroku/python-version
 FRESH_PYTHON=true
 
 echo "PYTHON COMPILE COMPLETE" | indent
