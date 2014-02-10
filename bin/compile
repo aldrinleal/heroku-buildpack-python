@@ -141,7 +141,7 @@ PYTHON_VERSION=$(cat runtime.txt)
 
 # Compile Python
 echo "Installing Python v2.7.6" | indent
-curl -s {$BASE_URL}Python-2.7.6.tgz
+curl -s {$BASE_URL}Python-2.7.6.tgz &> /dev/null
 tar jx Python-2.7.6.tgz
 cd Python-2.7.6.tgz
 ls | indent
