@@ -144,8 +144,6 @@ echo "Installing Python v${PYTHON_VERSION}" | indent
 curl -s {$BASE_URL}{$PYTHON_VERSION}.tar.gz
 tar zxf {$PYTHON_VERSION}.tar.gz &> /dev/null
 cd {$PYTHON_VERSION}
-ls | indent
-exit
 ./configure --enable-shared | indent
 make | indent
 make install | indent
