@@ -142,19 +142,20 @@ PYTHON_VERSION=$(cat runtime.txt)
 # Compile Python
 curl -s https://static-6px.s3.amazonaws.com/archive/python-2.7.6.tar.gz > python-2.7.6.tar.gz
 tar zxf python-2.7.6.tar.gz
-ls
-exit
-cd {$PYTHON_VERSION}
+cd python-2.7.6
 ./configure --enable-shared | indent
 make | indent
 make install | indent
 cd ..
 
-mv python .heroku/python
+mv python-2.7.6 .heroku/python
 
 # Record for future rference
-echo $PYTHON_VERSION > .heroku/python-version
+echo python-2.7.6 > .heroku/python-version
 FRESH_PYTHON=true
+
+cd ./heroku
+ls
 
 exit
 
