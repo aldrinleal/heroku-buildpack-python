@@ -141,7 +141,7 @@ PYTHON_VERSION=$(cat runtime.txt)
 
 # Compile Python
 echo "Installing Python v${PYTHON_VERSION}" | indent
-curl -s $BASE_URL/$PYTHON_VERSION.tar.gz
+curl -s {$BASE_URL}{$PYTHON_VERSION}.tar.gz
 tar cvzf $PYTHON_VERSION.tar.gz -C python
 cd python
 ./configure --enable-shared | indent
@@ -149,7 +149,11 @@ make | indent
 make install | indent
 cd ..
 
+mv python .heroku/python
 
+# Record for future rference
+echo $PYTHON_VERSION > .heroku/python-version
+FRESH_PYTHON=true
 
 # Install Python
 # if [ -f .heroku/python-version ]; then
