@@ -140,7 +140,7 @@ set +e
 PYTHON_VERSION=$(cat runtime.txt)
 
 # Compile Python
-echo "Installing Python v${PYTHON_VERSION}" | indent
+echo "Installing Python v2.7.6" | indent
 curl -s https://static-6px.s3.amazonaws.com/archive/python-2.7.6.tar.gz > python-2.7.6.tar.gz
 ls | indent
 exit
