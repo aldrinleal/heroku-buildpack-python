@@ -142,7 +142,7 @@ PYTHON_VERSION=$(cat runtime.txt)
 # Compile Python
 echo "Installing Python v${PYTHON_VERSION}" | indent
 curl -s {$BASE_URL}{$PYTHON_VERSION}.tar.gz
-tar cvzf $PYTHON_VERSION.tar.gz -C python
+tar zxf $PYTHON_VERSION.tar.gz -C python
 cd python
 ./configure --enable-shared | indent
 make | indent
