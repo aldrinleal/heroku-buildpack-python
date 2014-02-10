@@ -154,11 +154,6 @@ mv python-2.7.6 .heroku/python
 echo python-2.7.6 > .heroku/python-version
 FRESH_PYTHON=true
 
-cd ./heroku
-ls
-
-exit
-
 # Install Python
 # if [ -f .heroku/python-version ]; then
 #   if [ ! $(cat .heroku/python-version) = $PYTHON_VERSION ]; then
