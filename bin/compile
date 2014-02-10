@@ -141,7 +141,7 @@ PYTHON_VERSION=$(cat runtime.txt)
 
 # Compile Python
 echo "Installing Python v${PYTHON_VERSION}" | indent
-curl -s https://static-6px.s3.amazonaws.com/archive/python-2.7.6.tar.gz
+curl -s https://static-6px.s3.amazonaws.com/archive/python-2.7.6.tar.gz > python-2.7.6.tar.gz
 ls | indent
 exit
 tar zxf {$PYTHON_VERSION}.tar.gz &> /dev/null
