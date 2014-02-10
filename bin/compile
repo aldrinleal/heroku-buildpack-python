@@ -139,38 +139,50 @@ mkdir -p $(dirname $PROFILE_PATH)
 set +e
 PYTHON_VERSION=$(cat runtime.txt)
 
+# Compile Python
+echo "Installing Python v${PYTHON_VERSION}" | indent
+curl -s $BASE_URL/$PYTHON_VERSION.tar.gz
+tar cvzf $PYTHON_VERSION.tar.gz -C python
+cd python
+./configure --enable-shared | indent
+make | indent
+make install | indent
+cd ..
+
+
+
 # Install Python
-if [ -f .heroku/python-version ]; then
-  if [ ! $(cat .heroku/python-version) = $PYTHON_VERSION ]; then
-    bpwatch start uninstall_python
-      puts-step "Found $(cat .heroku/python-version), removing."
-      rm -fr .heroku/python
-    bpwatch stop uninstall_python
-  else
-    SKIP_INSTALL=1
-  fi
-fi
+# if [ -f .heroku/python-version ]; then
+#   if [ ! $(cat .heroku/python-version) = $PYTHON_VERSION ]; then
+#     bpwatch start uninstall_python
+#       puts-step "Found $(cat .heroku/python-version), removing."
+#       rm -fr .heroku/python
+#     bpwatch stop uninstall_python
+#   else
+#     SKIP_INSTALL=1
+#   fi
+# fi
 
-if [ ! "$SKIP_INSTALL" ]; then
-  bpwatch start install_python
-    puts-step "Preparing Python runtime ($PYTHON_VERSION)"
-    curl http://envy-versions.s3.amazonaws.com/$PYTHON_VERSION.tar.bz2 -s | tar jx &> /dev/null
-    if [[ $? != 0 ]] ; then
-      puts-warn "Requested runtime ($PYTHON_VERSION) was not found."
-      puts-warn "Aborting.  More info: https://devcenter.heroku.com/articles/python-support"
-      exit 1
-    fi
-    mv python .heroku/python
-  bpwatch stop install_python
+# if [ ! "$SKIP_INSTALL" ]; then
+#   bpwatch start install_python
+#     puts-step "Preparing Python runtime ($PYTHON_VERSION)"
+#     curl http://envy-versions.s3.amazonaws.com/$PYTHON_VERSION.tar.bz2 -s | tar jx &> /dev/null
+#     if [[ $? != 0 ]] ; then
+#       puts-warn "Requested runtime ($PYTHON_VERSION) was not found."
+#       puts-warn "Aborting.  More info: https://devcenter.heroku.com/articles/python-support"
+#       exit 1
+#     fi
+#     mv python .heroku/python
+#   bpwatch stop install_python
 
-  # Record for future reference.
-  echo $PYTHON_VERSION > .heroku/python-version
-  FRESH_PYTHON=true
+#   # Record for future reference.
+#   echo $PYTHON_VERSION > .heroku/python-version
+#   FRESH_PYTHON=true
 
-  hash -r
-else
-  puts-step "Using Python runtime ($PYTHON_VERSION)"
-fi
+#   hash -r
+# else
+#   puts-step "Using Python runtime ($PYTHON_VERSION)"
+# fi
 
 # If Pip isn't up to date:
 if [ "$FRESH_PYTHON" ] || [[ ! $(pip --version) == *$PIP_VERSION* ]]; then
@@ -324,9 +336,9 @@ if [ ! -f ${cache_target} ]; then
   mkdir build
   cd build
 
-  cmake -DBUILD_SHARED_LIBS=NO DCMAKE_SHARED_LINKER_FLAGS="-fPIC" -DBUILD_DOCS=OFF -DBUILD_EXAMPLES=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DWITH_OPENEXR=OFF -DCMAKE_FIND_ROOT_PATH=${target} -DCMAKE_INSTALL_PREFIX=${target} .. | indent
+  #cmake -DBUILD_SHARED_LIBS=NO DCMAKE_SHARED_LINKER_FLAGS="-fPIC" -DBUILD_DOCS=OFF -DBUILD_EXAMPLES=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DWITH_OPENEXR=OFF -DCMAKE_FIND_ROOT_PATH=${target} -DCMAKE_INSTALL_PREFIX=${target} .. | indent
 
-  #cmake -DCMAKE_INSTALL_PREFIX=${target} -DCMAKE_FIND_ROOT_PATH=${target} -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_NEW_PYTHON_SUPPORT=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_SHARED_LINKER_FLAGS="-fPIC" .. | indent
+  cmake -DCMAKE_INSTALL_PREFIX=${target} -DCMAKE_FIND_ROOT_PATH=${target} -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_NEW_PYTHON_SUPPORT=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_SHARED_LINKER_FLAGS="-fPIC" .. | indent
   
   make install | indent
   cd ..
